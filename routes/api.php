@@ -2,6 +2,7 @@
 
 use App\Exceptions\Errors\ErrorRouteNotFound;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,10 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('')->group(function () {
+Route::group(['middleware' => 'api'], function () {
     logApiCall();
 
     Route::get('', [Controller::class, 'hello']);
+
+    Route::post('login', [UserController::class, 'login']);
+    Route::post('register', [UserController::class, 'register']);
+
 
     Route::fallback(function(){
         return errorResponse(new ErrorRouteNotFound, 404);

@@ -25,6 +25,9 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('login', [UserController::class, 'login']);
     Route::post('register', [UserController::class, 'register']);
 
+    Route::patch('user', [UserController::class, 'update']);
+
+
 
     Route::fallback(function(){
         return errorResponse(new ErrorRouteNotFound, 404);

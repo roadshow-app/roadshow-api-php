@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Http\Controllers;
+namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -8,10 +8,10 @@ use Illuminate\Support\Str;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class UserRoutesTest extends TestCase {
+class UserRegisterTest extends TestCase {
     use DatabaseMigrations;
 
-    public function testRegisterEndPoint(){
+    public function testRegister(){
         $response = $this->json(
             'POST',
             'register',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -28,11 +29,19 @@ class UserController extends Controller {
         return $this->respondWithToken($token);
     }
 
-    public function login() {
+    public function login(Request $request) {
         $credentials = request(['email', 'password']);
 
+        $validator = Validator::make($request->all(),[
+            'email' => 'required|email|max:255',
+            'password' => 'required|min:8'
+        ]);
+
+        if($validator->fails()) return errorResponse($validator->errors()->first(), 400);
+
+
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return errorResponse('Unauthorized', 401);
         }
 
         return $this->respondWithToken($token);
@@ -45,9 +54,21 @@ class UserController extends Controller {
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
-    {
-        //
+    public function update(Request $request) {
+        $user = auth('api')->user();
+        if (!$user) return errorResponse('Unauthorized', 401);
+
+        if ($request->name) {
+            $user->name = $request->name;
+        }
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return response()->json(new UserResource($user), 200);
+
     }
 
     /**

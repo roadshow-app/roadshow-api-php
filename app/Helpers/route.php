@@ -1,13 +1,13 @@
 <?php
 
-
-if (! function_exists('log_api_call')) {
-    function log_api_call() {
+if (!function_exists('logApiCall')) {
+    function logApiCall($message = "") {
         $console = new Symfony\Component\Console\Output\ConsoleOutput();
 
-        $timestamp = date('D M d H:i:s Y');
+        date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
+        $timestamp = date('D M d h:i:s Y');
         $url = url()->current();
-        $console->writeln("[$timestamp] $url" );
+        $console->writeln("[$timestamp] $url $message");
 
     }
 }

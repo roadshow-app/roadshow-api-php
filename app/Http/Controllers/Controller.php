@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Contracts\Interfaces\ResponseInterface;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
 /**
@@ -18,6 +20,13 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
+    /** @var ResponseInterface */
+    private $responseInterface;
+
+    public function __construct(ResponseInterface $responseInterface) {
+        $this->responseInterface = $responseInterface;
+    }
+
     /**
      * @OA\Get(
      *     path="/",
@@ -26,7 +35,7 @@ class Controller extends BaseController {
      * )
      */
     public function hello() {
-        return response()->json('hoi :D', 200);
+        return $this->responseInterface->handleResponse('hoi :D', 200);
     }
 
 }

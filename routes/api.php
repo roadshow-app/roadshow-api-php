@@ -19,8 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('')->group(function () {
     logApiCall();
 
-
-
     Route::get('', [Controller::class, 'hello']);
 
     Route::fallback(function(){

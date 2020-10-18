@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('', function () {
-    return response()->json('hoi :D', 200);
-});
+Route::prefix('')->group(function () {
+    log_api_call();
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::get('', function () {
+        return response()->json('hoi :D', 200);
+    });
 });

@@ -1,12 +1,12 @@
 <?php
 
 if (!function_exists('errorResponse')) {
-    function errorResponse($message = null, $code) {
+    function errorResponse($message, $code) {
         logApiCall("error: " . $message);
 
         $message = (string) $message;
         return response()->json([
-            'status'=>'error',
+            'status' => 'error',
             'message' => $message,
         ], $code);
     }

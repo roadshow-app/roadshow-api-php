@@ -20,13 +20,6 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    /** @var ResponseInterface */
-    private $responseInterface;
-
-    public function __construct(ResponseInterface $responseInterface) {
-        $this->responseInterface = $responseInterface;
-    }
-
     /**
      * @OA\Get(
      *     path="/",
@@ -35,7 +28,7 @@ class Controller extends BaseController {
      * )
      */
     public function hello() {
-        return $this->responseInterface->handleResponse('hoi :D', 200);
+        return response()->json('hoi :D', 200);
     }
 
 }

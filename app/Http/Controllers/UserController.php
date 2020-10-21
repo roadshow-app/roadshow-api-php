@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Contracts\Providers\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller {
 
@@ -51,6 +53,8 @@ class UserController extends Controller {
             return errorResponse('Unauthorized', 401);
         }
 
+        if(JWTAuth::user()->is_removed) return errorResponse('Unauthorized', 401);
+
         return $this->respondWithToken($token);
     }
 
@@ -88,7 +92,16 @@ class UserController extends Controller {
         $user = auth('api')->user();
         if (!$user) return errorResponse('Unauthorized', 401);
 
+        $user->is_removed = 1;
+        $user->save();
+        auth('api')->invalidate();
+        auth('api')->logout();
 
+
+        return response()->json([
+            'status' => 'success',
+            'message' => "user removed"
+        ], 200);
     }
 
     protected function respondWithToken($token) {

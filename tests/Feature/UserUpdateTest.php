@@ -5,57 +5,83 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Str;
-use Tests\Helpers\Helpers;
+use Tests\Helpers\Helper as Helper;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserUpdateTest extends TestCase {
     use DatabaseMigrations;
 
-    public function testUpdateName(){
-        $helper = new Helpers();
-
+    public function testUpdateName() {
+        $helper = new Helper();
         $loginResponse = $helper->registerAndLogin();
 
-        $loginResponse = json_decode($loginResponse->getContent());
-
-        dd($loginResponse);
+        $currentUserState = $helper->getUserResource();
+        $randomName = Str::random(5);
 
         $response = $this->json(
             'PATCH',
             'user',
             [
-                'email' => Str::random(5) . '@email.com',
-                'name' => Str::random(5),
-                'password' => Str::random(8),
+                'name' => $randomName,
             ],
             [
                 'authorization' => 'Bearer ' . $loginResponse->access_token
             ]
         );
 
-        /*$response
+        $this->assertNotEquals($currentUserState->name, $response->original->name);
+        $response
             ->assertStatus(200)
-            ->assertJsonStructure([
-                'access_token', 'token_type', 'expires_in'
-            ]);*/
+            ->assertExactJson([
+                'id' => $currentUserState->id,
+                'name' => $randomName,
+                'email' => $currentUserState->email
+            ]);
     }
 
-    public function testUpdatePassword(){
+    public function testUpdatePassword() {
+        $helper = new Helper();
+
+        $curretUserPassword = Str::random(8);
+        $loginResponse = $helper->registerAndLogin($curretUserPassword);
+        $currentUserState = $helper->getUserResource();
+
+        $randomPassword = Str::random(8);
+
         $response = $this->json(
-            'POST',
-            'register',
+            'PATCH',
+            'user',
             [
-                'email' => Str::random(5) . '@email.com',
-                'name' => Str::random(5),
-                'password' => Str::random(8),
+                'password' => $randomPassword,
+            ],
+            [
+                'authorization' => 'Bearer ' . $loginResponse->access_token
             ]
         );
 
         $response
             ->assertStatus(200)
-            ->assertJsonStructure([
-                'access_token', 'token_type', 'expires_in'
+            ->assertExactJson([
+                'id' => $currentUserState->id,
+                'name' => $currentUserState->name,
+                'email' => $currentUserState->email,
+            ]);
+
+        $response = $this->json(
+            'POST',
+            'login',
+            [
+                'email' => $currentUserState->email,
+                'password' => $curretUserPassword,
+            ]
+        );
+
+        $response
+            ->assertStatus(401)
+            ->assertExactJson([
+                'status' => 'error',
+                'message' => 'Unauthorized',
             ]);
     }
 }

@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller {
 
+    public function index() {
+        $user = auth('api')->user();
+        if (!$user) return errorResponse('Unauthorized', 401);
+
+        return response()->json(new UserResource($user), 200);
+    }
+
     public function register(Request $request) {
         $validator = Validator::make($request->all(),[
             'email' => 'required|email|max:255|unique:users',
@@ -77,9 +84,11 @@ class UserController extends Controller {
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
-    {
-        //
+    public function destroy() {
+        $user = auth('api')->user();
+        if (!$user) return errorResponse('Unauthorized', 401);
+
+
     }
 
     protected function respondWithToken($token) {

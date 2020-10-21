@@ -8,16 +8,17 @@ use Illuminate\Support\Str;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class Helpers extends TestCase {
+class Helper extends TestCase {
     use DatabaseMigrations;
+
+    private $loginResponseJson;
 
     function __construct() {
         parent::setUp();
     }
 
-    public function registerAndLogin() {
+    public function registerAndLogin($userPassword = "12345678") {
         $userEmail = Str::random(5) . '@email.com';
-        $userPassword = Str::random(8);
 
         $this->json(
             'POST',
@@ -38,7 +39,21 @@ class Helpers extends TestCase {
             ]
         );
 
-        return $response;
+        $this->loginResponseJson = json_decode($response->getContent());
+        return $this->loginResponseJson;
+    }
+
+    public function getUserResource() {
+        $response = $this->json(
+            'GET',
+            'user',
+            [],
+            [
+                'authorization' => 'Bearer ' . $this->loginResponseJson->access_token
+            ]
+        );
+
+        return json_decode($response->getContent());
     }
 
 }

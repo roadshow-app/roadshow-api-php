@@ -24,8 +24,11 @@ Route::group(['middleware' => 'api'], function () {
 
     Route::post('login', [UserController::class, 'login']);
     Route::post('register', [UserController::class, 'register']);
-
+    Route::get('user', [UserController::class, 'index']);
     Route::patch('user', [UserController::class, 'update']);
+    Route::delete('user', [UserController::class, 'destroy']);
+
+
 
 
 

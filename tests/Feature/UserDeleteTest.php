@@ -4,13 +4,21 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Str;
 use Tests\Helpers\Helper as Helper;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserDeleteTest extends TestCase {
-    use DatabaseMigrations;
+    use RefreshDatabase;
+
+    protected function setUp(): void {
+        parent::setUp();
+        $this->withoutMiddleware(
+            ThrottleRequests::class
+        );
+    }
 
     public function testDeleteUser() {
         $helper = new Helper();

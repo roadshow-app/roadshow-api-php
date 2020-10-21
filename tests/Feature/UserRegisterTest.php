@@ -4,12 +4,20 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserRegisterTest extends TestCase {
-    use DatabaseMigrations;
+    use RefreshDatabase;
+
+    protected function setUp(): void {
+        parent::setUp();
+        $this->withoutMiddleware(
+            ThrottleRequests::class
+        );
+    }
 
     public function testRegister(){
         $response = $this->json(

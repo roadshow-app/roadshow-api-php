@@ -3,13 +3,20 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
 
 class BaseRoutesTest extends TestCase {
-
     use RefreshDatabase;
+
+    protected function setUp(): void {
+        parent::setUp();
+        $this->withoutMiddleware(
+            ThrottleRequests::class
+        );
+    }
 
     public function testBaseEndPoint() {
         $response = $this->json('GET', '/');

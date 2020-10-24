@@ -18,6 +18,8 @@ class CreateCompaniesTable extends Migration
             $table->string('name');
             $table->string('photo');
             $table->string('description');
+            $table->uuid('owner_id');
+            $table->foreign('owner_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

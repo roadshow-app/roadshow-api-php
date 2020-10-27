@@ -45,7 +45,7 @@ class CompanyCreateTest extends TestCase {
         $response
             ->assertStatus(200)
             ->assertJsonStructure([
-                'name', 'photo', 'description'
+                'id', 'name', 'photo', 'description'
             ]);
     }
 

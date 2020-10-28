@@ -10,6 +10,10 @@ class Company extends Model {
     use HasFactory;
     use Uuid;
 
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'name',
         'description',

@@ -19,7 +19,6 @@ class CompanyController extends Controller {
         if($validator->fails()) return errorResponse($validator->errors()->first(), 400);
 
         $company = Company::create([
-            'id' => '',
             'name' => $request->name,
             'description' => $request->description,
             'owner_id' => $user->id,
@@ -29,7 +28,7 @@ class CompanyController extends Controller {
     }
 
     public function show(Company $company) {
-        //
+        dd($company);
     }
 
     public function update(Request $request, Company $company) {

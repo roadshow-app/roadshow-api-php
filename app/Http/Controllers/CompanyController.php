@@ -27,8 +27,12 @@ class CompanyController extends Controller {
         return response()->json(new CompanyResource($company), 200);
     }
 
-    public function show(Company $company) {
-        dd($company);
+    public function show($id) {
+        $company = Company::find($id);
+
+        if (!$company) return errorResponse('Company not found', 404);
+
+        return response()->json(new CompanyResource($company), 200);
     }
 
     public function update(Request $request, Company $company) {

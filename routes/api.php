@@ -30,7 +30,7 @@ Route::group(['middleware' => 'api'], function () {
     Route::delete('user', [UserController::class, 'destroy']);
 
     Route::post('company', [CompanyController::class, 'create']);
-    Route::get('company', [CompanyController::class, 'show']);
+    Route::get('company/{id}', [CompanyController::class, 'show']);
     Route::patch('company', [CompanyController::class, 'update']);
     Route::delete('company', [CompanyController::class, 'destroy']);
 

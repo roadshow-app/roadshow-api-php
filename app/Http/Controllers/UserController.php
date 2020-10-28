@@ -93,6 +93,7 @@ class UserController extends Controller {
         if (!$user) return errorResponse('Unauthorized', 401);
 
         $user->is_removed = 1;
+        $user->name = "[User Removed]";
         $user->save();
         auth('api')->invalidate();
         auth('api')->logout();

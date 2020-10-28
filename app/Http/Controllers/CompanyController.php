@@ -35,8 +35,25 @@ class CompanyController extends Controller {
         return response()->json(new CompanyResource($company), 200);
     }
 
-    public function update(Request $request, Company $company) {
-        //
+    public function update(Request $request) {
+        $user = auth('api')->user();
+        if (!$user) return errorResponse('Unauthorized', 401);
+
+        $company = $user->company;
+
+        if ($request->name) {
+            $company->name = $request->name;
+        }
+        if ($request->photo) {
+            $company->photo = $request->photo;
+        }
+        if ($request->description) {
+            $company->description = $request->description;
+        }
+
+        $company->save();
+
+        return response()->json(new CompanyResource($company), 200);
     }
 
     public function destroy(Company $company) {

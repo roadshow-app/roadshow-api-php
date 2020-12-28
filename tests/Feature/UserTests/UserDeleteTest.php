@@ -13,26 +13,34 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class UserDeleteTest extends TestCase {
     use RefreshDatabase;
 
+    private $helper;
+    private $loginResponse;
+    private $currentUserState;
+    private $currentCompanyState;
+
     protected function setUp(): void {
         parent::setUp();
         $this->withoutMiddleware(
             ThrottleRequests::class
         );
+
+        $this->helper = new Helper();
+        $this->loginResponse = $this->helper->registerAndLogin();
+        $this->currentUserState = $this->helper->getUserResource();
+        $this->currentCompanyState = $this->helper->createAndGetCompany();
+
     }
 
     public function testDeleteUser() {
-        $helper = new Helper();
 
         $curretUserPassword = Str::random(8);
-        $loginResponse = $helper->registerAndLogin($curretUserPassword);
-        $currentUserState = $helper->getUserResource();
 
         $response = $this->json(
             'DELETE',
             'user',
             [],
             [
-                'authorization' => 'Bearer ' . $loginResponse->access_token
+                'authorization' => 'Bearer ' . $this->loginResponse->access_token
             ]
         );
 
@@ -48,7 +56,7 @@ class UserDeleteTest extends TestCase {
             'user',
             [],
             [
-                'authorization' => 'Bearer ' . $loginResponse->access_token
+                'authorization' => 'Bearer ' . $this->loginResponse->access_token
             ]
         );
 
@@ -63,7 +71,7 @@ class UserDeleteTest extends TestCase {
             'POST',
             'login',
             [
-                'email' => $currentUserState->email,
+                'email' => $this->currentUserState->email,
                 'password' => $curretUserPassword,
             ]
         );
@@ -73,6 +81,41 @@ class UserDeleteTest extends TestCase {
             ->assertExactJson([
                 'status' => 'error',
                 'message' => 'Unauthorized',
+            ]);
+    }
+
+    public function testDeleteUserWithCompany() {
+
+        $response = $this->json(
+            'DELETE',
+            'user',
+            [],
+            [
+                'authorization' => 'Bearer ' . $this->loginResponse->access_token
+            ]
+        );
+
+        $response
+            ->assertStatus(200)
+            ->assertExactJson([
+                'status' => 'success',
+                'message' => "user removed"
+            ]);
+
+        $response = $this->json(
+            'GET',
+            "company/{$this->currentCompanyState->id}",
+            [],
+            [
+                'authorization' => 'Bearer ' . $this->loginResponse->access_token
+            ]
+        );
+
+        $response
+            ->assertStatus(404)
+            ->assertExactJson([
+                'status' => 'error',
+                'message' => 'Company not found',
             ]);
     }
 }

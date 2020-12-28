@@ -43,6 +43,23 @@ class Helper extends TestCase {
         return $this->loginResponseJson;
     }
 
+    public function createAndGetCompany() {
+        $response = $this->json(
+            'POST',
+            'company',
+            [
+                'name' => Str::random(8),
+                'description' => Str::random(8),
+            ],
+            [
+                'authorization' => 'Bearer ' . $this->loginResponseJson->access_token
+            ]
+        );
+
+        return json_decode($response->getContent());
+
+    }
+
     public function getUserResource() {
         $response = $this->json(
             'GET',

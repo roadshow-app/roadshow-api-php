@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -93,7 +94,12 @@ class UserController extends Controller {
         if (!$user) return errorResponse('Unauthorized', 401);
 
         $user->is_removed = 1;
+        $user->name = "[User Removed]";
         $user->save();
+
+        $company = Company::find($user->company->id);;
+        if ($user->company) $company->delete();
+
         auth('api')->invalidate();
         auth('api')->logout();
 

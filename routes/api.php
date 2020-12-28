@@ -1,6 +1,7 @@
 <?php
 
 use App\Exceptions\Errors\ErrorRouteNotFound;
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -27,6 +28,12 @@ Route::group(['middleware' => 'api'], function () {
     Route::get('user', [UserController::class, 'index']);
     Route::patch('user', [UserController::class, 'update']);
     Route::delete('user', [UserController::class, 'destroy']);
+
+    Route::post('company', [CompanyController::class, 'create']);
+    Route::get('company/{id}', [CompanyController::class, 'show']);
+    Route::patch('company', [CompanyController::class, 'update']);
+    Route::delete('company', [CompanyController::class, 'destroy']);
+
 
 
 

@@ -36,10 +36,7 @@ class CompanyShowTest extends TestCase {
         $response = $this->json(
             'GET',
             "company/{$this->currentCompanyState->id}",
-            [
-                'name' => Str::random(8),
-                'description' => Str::random(8),
-            ],
+            [],
             [
                 'authorization' => 'Bearer ' . $this->loginResponse->access_token
             ]
@@ -61,10 +58,7 @@ class CompanyShowTest extends TestCase {
         $response = $this->json(
             'GET',
             "company/$id",
-            [
-                'name' => Str::random(8),
-                'description' => Str::random(8),
-            ],
+            [],
             [
                 'authorization' => 'Bearer ' . $this->loginResponse->access_token
             ]
